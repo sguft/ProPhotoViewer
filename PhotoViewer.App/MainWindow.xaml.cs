@@ -9,7 +9,7 @@ namespace PhotoViewer.App {
     /// </summary>
     public partial class MainWindow : Window {
         private string _folder = @"D:\Temp\ImageTest";
-        private string _goodFolderName = @"!Gode";
+        private string _goodFolderName = @"!Good";
         private CachedImageList _imageList;        
 
         public MainWindow() {
@@ -74,6 +74,7 @@ namespace PhotoViewer.App {
             if (!image.Failed) {
                 FileInfo sourceFileInfo = new FileInfo(image.FilePath);
                 string destinationFolder = Path.Combine(sourceFileInfo.DirectoryName, _goodFolderName);
+                EnsureDirectory(destinationFolder);
                 string nameWithoutExt = Path.GetFileNameWithoutExtension(image.FilePath);
                 foreach (string searchFilepath in Directory.EnumerateFiles(_folder, nameWithoutExt + ".*")) {
                     FileInfo searchFileInfo = new FileInfo(searchFilepath);
@@ -81,6 +82,12 @@ namespace PhotoViewer.App {
                     File.Copy(searchFilepath, destinationFilePath, true);
                 }
                 StatusText.Text = $"{sourceFileInfo.Name} was copied to {_goodFolderName}";
+            }
+        }
+
+        private void EnsureDirectory(string path) {
+            if (!Directory.Exists(path)) {
+                Directory.CreateDirectory(path);
             }
         }
 
